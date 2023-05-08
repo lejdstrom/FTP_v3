@@ -2,9 +2,6 @@
 #include "server_utils.h"
 
 
-
-
-
 int main(int argc, char **argv)
 {
     if (argc < 2)
@@ -37,19 +34,20 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-
     while (true)
     {
         socklen_t len = sizeof(client_addr);
         client_sock = accept(server_sock, (struct sockaddr *)&client_addr, (socklen_t*)&len);
+
+        if(client_sock == SOCKET_ERROR)
+        {
+            perror("Accept Failed");
+            continue;
+        }
+
+        pthread_t client_thread;
+        pthread_create(&client_thread, NULL, client_routine, (void*)client_sock);
     }
     
-
-
-
-
-
-
-
     return 0;
 }
