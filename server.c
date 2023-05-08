@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     struct sockaddr_in server_addr, client_addr;
 
     server_sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_sock == -1) {
+    if (server_sock == SOCKET_ERROR) {
         perror("Error creating socket");
         exit(EXIT_FAILURE);
     }
@@ -24,12 +24,12 @@ int main(int argc, char **argv)
     server_addr.sin_addr.s_addr = INADDR_ANY;
     server_addr.sin_port = htons(atoi(argv[1]));
 
-    if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
+    if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
         perror("Error binding socket");
         exit(EXIT_FAILURE);
     }
 
-    if (listen(server_sock, MAX_CONNECTIONS) == -1) {
+    if (listen(server_sock, MAX_CONNECTIONS) == SOCKET_ERROR) {
         perror("Error listening on socket");
         exit(EXIT_FAILURE);
     }

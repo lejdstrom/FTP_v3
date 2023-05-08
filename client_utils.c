@@ -13,8 +13,12 @@ void display_menu()
 
 void handle_client_cmd(int server_sck)
 {
-    char input[BUFF_SIZE];
+    FTP_COMMANDS choice;
 
+    do
+    {
+
+    char input[BUFF_SIZE];
     puts("Enter a command");
     fgets(input, BUFF_SIZE, stdin);
 
@@ -22,8 +26,9 @@ void handle_client_cmd(int server_sck)
     // up <filename>
     // ls
     // exit
+    choice = parse_ftp_cmd(input);
 
-    switch (parse_ftp_cmd(input))
+    switch (choice)
     {
     case DOWNLOAD:
         recv_file_from_socket(input, server_sck, SERVER_TO_CLIENT);
@@ -43,7 +48,8 @@ void handle_client_cmd(int server_sck)
     default:
         break;
     }
-
+    }while (choice != EXIT);
+    
 }
 
 void get_server_listing(int server_sck)
