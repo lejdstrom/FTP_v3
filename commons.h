@@ -15,6 +15,8 @@
 
 #define BUFF_SIZE (1024)
 #define LOCAL_HOST "127.0.0.1"
+#define MAX_CONNECTIONS (10)
+#define SOCKET_ERROR (-1)
 
 typedef enum{
     LIST, UPLOAD, DOWNLOAD, EXIT /*MKDIR, CD*/
