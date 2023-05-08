@@ -1,7 +1,6 @@
 #include "commons.h"
 #include "server_utils.h"
 
-
 int main(int argc, char **argv)
 {
     if (argc < 2)
