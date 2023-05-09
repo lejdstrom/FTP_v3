@@ -2,7 +2,12 @@
 
 void* client_routine(void *args)
 {
-    pthread_detach(pthread_self());
+    //pthread_detach(pthread_self());
+
+
+    #ifdef DEBUG
+        printf("\tDEBUG: In client_routine func\n");
+    #endif
 
     int client_socket = (int)args;
     char buffer[BUFF_SIZE];
@@ -14,6 +19,10 @@ void* client_routine(void *args)
         bytes_recv = recv(client_socket, buffer, BUFF_SIZE - 1, 0);
         // null terminate receved string
         buffer[bytes_recv] = 0;
+
+        #ifdef DEBUG
+            printf("\tDEBUG: buffer: %s\n", buffer);
+        #endif
 
         switch (parse_ftp_cmd(buffer))
         {

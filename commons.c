@@ -31,6 +31,7 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
     FILE * file_ptr = NULL;
     char file_path[BUFF_SIZE];
     char buffer[BUFF_SIZE];
+    char * new_file_name = filename + 3;
     long int file_size;
     size_t bytes_read, byte_sent;
 
@@ -38,19 +39,19 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
     // download
     if(direction == SERVER_TO_CLIENT)
     {
-        snprintf(file_path, sizeof(file_path), "server_files/%s", filename);
+        snprintf(file_path, sizeof(file_path), "server_files/%s", new_file_name);
 
     }       // upload
     else if (direction == CLIENT_TO_SERVER)
     {
-        snprintf(file_path, sizeof(file_path), "client_files/%s", filename);
+        snprintf(file_path, sizeof(file_path), "client_files/%s", new_file_name);
     }
 
     #ifdef DEBUG
-        printf("\tDEBUG: filename: %s\n", filename);
+        printf("\tDEBUG: filepath: %s\n", file_path);
     #endif
 
-    file_ptr = fopen(filename, "rb");
+    file_ptr = fopen(file_path, "rb");
 
     if(file_ptr == NULL)
     {
@@ -134,6 +135,13 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
 
     // recv size of file
     recv(socket, &file_size, sizeof(long int), 0);
+
+    if(file_size <= 0)
+    {
+        perror("Empty file");
+        return -1;
+    }
+
     copy_file_size = file_size;
 
     do

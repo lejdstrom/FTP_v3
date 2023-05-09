@@ -48,8 +48,12 @@ int main(int argc, char **argv)
 
         printf("connected\n");
 
+        /*
         pthread_t client_thread;
         pthread_create(&client_thread, NULL, client_routine, (void*)client_sock);
+        */
+
+       client_routine((void*)client_sock);
     }
     
     return 0;

@@ -31,10 +31,12 @@ void handle_client_cmd(int server_sck)
         switch (choice)
         {
         case DOWNLOAD:
+            send(server_sck, input, BUFF_SIZE, 0);
             recv_file_from_socket(input, server_sck, SERVER_TO_CLIENT);
             break;
 
         case UPLOAD:
+            send(server_sck, input, BUFF_SIZE, 0);
             send_file_to_socket(input, server_sck, CLIENT_TO_SERVER);
             break;
 
