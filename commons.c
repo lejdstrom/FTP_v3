@@ -104,7 +104,7 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
     FILE * file_ptr = NULL;
     char * new_file_name = filename + 3;
     char file_path[BUFF_SIZE];
-    char buffer[BUFF_SIZE] = {};
+    char buffer[BUFF_SIZE];
     long int file_size;
     long int copy_file_size, recv_acc = 0;
     size_t bytes_receved, byte_write;
