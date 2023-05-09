@@ -24,5 +24,11 @@ client_utils.o: client_utils.c client_utils.h
 server_utils.o: server_utils.c server_utils.h
 	gcc -Wall -c -g server_utils.c
 
+debug_client:
+	gdb --args ./client 12345
+
+debug_server:
+	gdb --args ./server 12345
+
 clean:
 	@rm -f *.o server client

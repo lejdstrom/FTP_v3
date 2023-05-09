@@ -18,6 +18,8 @@
 #define MAX_CONNECTIONS (10)
 #define SOCKET_ERROR (-1)
 
+#define DEBUG
+
 typedef enum{
     LIST, UPLOAD, DOWNLOAD, EXIT /*MKDIR, CD*/
 }FTP_COMMANDS;

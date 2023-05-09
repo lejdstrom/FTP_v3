@@ -35,6 +35,8 @@ int main(int argc, char **argv)
 
     while (true)
     {
+        printf("waiting for connections ...\n");
+
         socklen_t len = sizeof(client_addr);
         client_sock = accept(server_sock, (struct sockaddr *)&client_addr, (socklen_t*)&len);
 
@@ -43,6 +45,8 @@ int main(int argc, char **argv)
             perror("Accept Failed");
             continue;
         }
+
+        printf("connected\n");
 
         pthread_t client_thread;
         pthread_create(&client_thread, NULL, client_routine, (void*)client_sock);

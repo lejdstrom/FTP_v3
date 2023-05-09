@@ -97,29 +97,34 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
 int recv_file_from_socket(const char * filename, int socket, DIRECTION direction)
 {
     FILE * file_ptr = NULL;
+    char * new_file_name = filename + 3;
     char file_path[BUFF_SIZE];
     char buffer[BUFF_SIZE];
     long int file_size;
     long int copy_file_size, recv_acc = 0;
     size_t bytes_receved, byte_write;
 
+    #ifdef DEBUG
+        printf("\tDEBUG: new file name: %s\n", new_file_name);
+    #endif
+
     // where we create the file ?
     if(direction == SERVER_TO_CLIENT)
     {
-        snprintf(file_path, sizeof(file_path), "client_files/%s", filename);
+        snprintf(file_path, sizeof(file_path), "client_files/%s", new_file_name);
 
     }
     else if (direction == CLIENT_TO_SERVER)
     {
-        snprintf(file_path, sizeof(file_path), "server_files/%s", filename);
+        snprintf(file_path, sizeof(file_path), "server_files/%s", new_file_name);
     }
 
 
     #ifdef DEBUG
-        printf("\tDEBUG: filename: %s\n", filename);
+        printf("\tDEBUG: file_path: %s\n", file_path);
     #endif
 
-    file_ptr = fopen(filename, "wb");
+    file_ptr = fopen(file_path, "wb");
 
     if(file_ptr == NULL)
     {
