@@ -35,16 +35,20 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
     long int file_size;
     size_t bytes_read, byte_sent;
 
+    #ifdef DEBUG
+        printf("\tDEBUG: in send_file\n");
+    #endif
+
     // from where we read ?
     // download
     if(direction == SERVER_TO_CLIENT)
     {
-        snprintf(file_path, sizeof(file_path), "server_files/%s", new_file_name);
+        snprintf(file_path, sizeof(file_path), "server_files/%s", filename);
 
     }       // upload
     else if (direction == CLIENT_TO_SERVER)
     {
-        snprintf(file_path, sizeof(file_path), "client_files/%s", new_file_name);
+        snprintf(file_path, sizeof(file_path), "client_files/%s", filename);
     }
 
     #ifdef DEBUG
@@ -74,7 +78,7 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
             return -1;
         }
 
-        byte_sent = send(socket, buffer, BUFF_SIZE, 0);
+        byte_sent = send(socket, buffer, bytes_read, 0); //write(socket, buffer, bytes_read)
 
         if(byte_sent < 0)
         {
@@ -100,7 +104,7 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
     FILE * file_ptr = NULL;
     char * new_file_name = filename + 3;
     char file_path[BUFF_SIZE];
-    char buffer[BUFF_SIZE];
+    char buffer[BUFF_SIZE] = {};
     long int file_size;
     long int copy_file_size, recv_acc = 0;
     size_t bytes_receved, byte_write;
@@ -119,7 +123,6 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
     {
         snprintf(file_path, sizeof(file_path), "server_files/%s", new_file_name);
     }
-
 
     #ifdef DEBUG
         printf("\tDEBUG: file_path: %s\n", file_path);
@@ -144,10 +147,10 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
 
     copy_file_size = file_size;
 
-    do
+    while (file_size > 0)
     {
         bytes_receved = recv(socket, buffer, BUFF_SIZE, 0);
-        byte_write = fwrite(buffer, sizeof(char), BUFF_SIZE, file_ptr);
+        byte_write = fwrite(buffer, sizeof(char), bytes_receved, file_ptr);
 
         if(byte_write < 0)
         {
@@ -167,7 +170,7 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
         
         file_size -= bytes_receved;
         
-    } while (file_size > 0 && bytes_receved > 0);
+    } 
 
     fclose(file_ptr);
     return 0;
