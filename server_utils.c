@@ -4,7 +4,6 @@ void* client_routine(void *args)
 {
     //pthread_detach(pthread_self());
 
-
     #ifdef DEBUG
         printf("\tDEBUG: In client_routine func\n");
     #endif
@@ -16,6 +15,7 @@ void* client_routine(void *args)
 
     do
     {
+        memset(buffer, 0, BUFF_SIZE);
         bytes_recv = recv(client_socket, buffer, BUFF_SIZE - 1, 0);
         // null terminate receved string
         buffer[bytes_recv] = 0;
@@ -31,7 +31,9 @@ void* client_routine(void *args)
                 #ifdef DEBUG
                     printf("\tDEBUG: filename: %s\n", filename);
                 #endif
-            send_file_to_socket(filename, client_socket, SERVER_TO_CLIENT);
+            //send_file_to_socket(filename, client_socket, SERVER_TO_CLIENT);
+            send_file_to_client(filename, client_socket);
+            memset(buffer, 0, BUFF_SIZE);
             break;
         
         case UPLOAD:
@@ -40,15 +42,16 @@ void* client_routine(void *args)
                     printf("\tDEBUG: filename: %s\n", filename);
                 #endif
 
-            recv_file_from_socket(filename, client_socket, CLIENT_TO_SERVER);
+            //recv_file_from_socket(filename, client_socket, CLIENT_TO_SERVER);
+            recv_file_from_client(filename, client_socket);
+            memset(buffer, 0, BUFF_SIZE);
             break;
 
         case LIST:
             break;
 
         case EXIT:
-            close(client_socket);
-            return NULL;
+            goto exit;
             break;
 
         default:
@@ -57,6 +60,7 @@ void* client_routine(void *args)
 
     } while (bytes_recv > 0);
     
-
+exit:
+    close(client_socket);
     return NULL;
 }

@@ -48,13 +48,15 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
     }       // upload
     else if (direction == CLIENT_TO_SERVER)
     {
-        snprintf(file_path, sizeof(file_path), "client_files/%s", filename);
+        snprintf(file_path, sizeof(file_path), "client_files/%s", new_file_name);
     }
 
     #ifdef DEBUG
         printf("\tDEBUG: filepath: %s\n", file_path);
     #endif
 
+    // remove new line
+    file_path[strcspn(file_path, "\n")] = 0;
     file_ptr = fopen(file_path, "rb");
 
     if(file_ptr == NULL)
@@ -67,6 +69,9 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
 
     // send file size
     send(socket, &file_size, sizeof(long int), 0);
+    #ifdef DEBUG
+        printf("\tfile size sent: %ld\n", file_size);
+    #endif
 
     while (file_size > 0)
     {
@@ -87,13 +92,22 @@ int send_file_to_socket(const char * filename, int socket, DIRECTION direction)
         }
 
         #ifdef DEBUG
-        printf("\tDEBUG: sent: %ld\nread: %ld\n", byte_sent, bytes_read);
+        printf("\tsent: %ld\nread: %ld\n", byte_sent, bytes_read);
         #endif
 
         file_size -= bytes_read;
     }
+
     
     fclose(file_ptr);
+
+    /*
+    if(direction == CLIENT_TO_SERVER)
+    {
+        char ack[BUFF_SIZE];
+        recv(socket, ack, BUFF_SIZE, 0);
+    }
+    */
 
     //log message
     return 0;
@@ -110,7 +124,7 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
     size_t bytes_receved, byte_write;
 
     #ifdef DEBUG
-        printf("\tDEBUG: new file name: %s\n", new_file_name);
+        printf("\tin recv_file\n\t: new file name: %s\n", new_file_name);
     #endif
 
     // where we create the file ?
@@ -121,11 +135,11 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
     }
     else if (direction == CLIENT_TO_SERVER)
     {
-        snprintf(file_path, sizeof(file_path), "server_files/%s", new_file_name);
+        snprintf(file_path, sizeof(file_path), "server_files/%s", filename);
     }
 
     #ifdef DEBUG
-        printf("\tDEBUG: file_path: %s\n", file_path);
+        printf("\tfile_path: %s\n", file_path);
     #endif
 
     file_ptr = fopen(file_path, "wb");
@@ -137,7 +151,12 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
     }
 
     // recv size of file
+    //recv(socket, &file_size, sizeof(long int), 0);
     recv(socket, &file_size, sizeof(long int), 0);
+
+    #ifdef DEBUG
+        printf("\tfile size recv: %ld\n", file_size);
+    #endif
 
     if(file_size <= 0)
     {
@@ -166,11 +185,19 @@ int recv_file_from_socket(const char * filename, int socket, DIRECTION direction
 
         // progress bar
         recv_acc += bytes_receved;
-        printf("%ld/%ld\n", recv_acc, copy_file_size);
+        printf("%ld\/%ld\n", recv_acc, copy_file_size);
         
         file_size -= bytes_receved;
         
-    } 
+    }
+
+    /*
+    if(direction == SERVER_TO_CLIENT)
+    {
+        char ack[BUFF_SIZE];
+        recv(socket, ack, BUFF_SIZE, 0);
+    }
+    */
 
     fclose(file_ptr);
     return 0;

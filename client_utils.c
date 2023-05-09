@@ -19,6 +19,7 @@ void handle_client_cmd(int server_sck)
     {
         display_menu();
         char input[BUFF_SIZE];
+        memset(input, 0, BUFF_SIZE);
         puts("Enter a command");
         fgets(input, BUFF_SIZE, stdin);
 
@@ -33,11 +34,13 @@ void handle_client_cmd(int server_sck)
         case DOWNLOAD:
             send(server_sck, input, BUFF_SIZE, 0);
             recv_file_from_socket(input, server_sck, SERVER_TO_CLIENT);
+            memset(input, 0, BUFF_SIZE);
             break;
 
         case UPLOAD:
             send(server_sck, input, BUFF_SIZE, 0);
             send_file_to_socket(input, server_sck, CLIENT_TO_SERVER);
+            memset(input, 0, BUFF_SIZE);
             break;
 
         case LIST:
@@ -48,6 +51,7 @@ void handle_client_cmd(int server_sck)
             break;
 
         default:
+            puts("unknow command");
             break;
         }
 

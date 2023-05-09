@@ -1,6 +1,6 @@
 #include "commons.h"
 #include "client_utils.h"
-
+#include <fcntl.h>
 
 int main(int argc, char **argv)
 {
@@ -29,6 +29,9 @@ int main(int argc, char **argv)
         perror("Warning connecting");
         return 1;
     }
+
+    int flags = fcntl(sockfd, F_GETFL, 0);
+    fcntl(sockfd, F_SETFL, flags & ~O_NONBLOCK);
 
     handle_client_cmd(sockfd);
 

@@ -3,8 +3,6 @@
 
 #include "commons.h"
 
-
-
 void* client_routine(void *args);
 
 #endif
