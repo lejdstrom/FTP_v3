@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     servaddr.sin_port = htons(atoi(argv[1]));
 
 
-    if(sockfd = socket(AF_INET, SOCK_STREAM, 0) < 0)
+    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("Warning creating socket");
         return 1;
