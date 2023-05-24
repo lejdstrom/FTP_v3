@@ -31,8 +31,8 @@ void* client_routine(void *args)
                 #ifdef DEBUG
                     printf("\tDEBUG: filename: %s\n", filename);
                 #endif
-            //send_file_to_socket(filename, client_socket, SERVER_TO_CLIENT);
-            send_file_to_client(filename, client_socket);
+            send_file_to_socket(filename, client_socket, SERVER_TO_CLIENT);
+            //send_file_to_client(filename, client_socket);
             memset(buffer, 0, BUFF_SIZE);
             break;
         
@@ -42,8 +42,8 @@ void* client_routine(void *args)
                     printf("\tDEBUG: filename: %s\n", filename);
                 #endif
 
-            //recv_file_from_socket(filename, client_socket, CLIENT_TO_SERVER);
-            recv_file_from_client(filename, client_socket);
+            recv_file_from_socket(filename, client_socket, CLIENT_TO_SERVER);
+            //recv_file_from_client(filename, client_socket);
             memset(buffer, 0, BUFF_SIZE);
             break;
 
